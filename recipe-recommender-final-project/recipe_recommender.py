@@ -1,38 +1,18 @@
-from recipe_scrapers import scrape_me
-
-# Remove common filler words that aren't ingredients; I actually ended up keeping some words that could be latent features
 import pandas
-data = pandas.read_csv("words_remove.csv")
-words_remove = data['Words'].tolist()
-
-def clean_ingredients():
-    for i in range(len(words_remove)):
-        global ingredients
-        ingredients = [x.replace(words_remove[i],"") for x in ingredients]
-        ingredients = [x.replace("  "," ") for x in ingredients]
-        ingredients = [x.strip() for x in ingredients]
-
-        
-        
-df_recipes = pandas.read_csv("recipe_links.csv")
-recipe_links = df_recipes['Link'].tolist()
-
-ingredients_combined = []
-titles_list = []
-for j in range(len(recipe_links)):
-    scrape = scrape_me(recipe_links[j])
-    ingredients = scrape.ingredients()
-    clean_ingredients()
-    ingredients_combined.append(' '.join(ingredients))
-    titles_list.append(scrape.title())
-    
-ingredients_matrix = df_recipes
-ingredients_matrix['Title'] = titles_list
-ingredients_matrix['Ingredients'] = ingredients_combined
-
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+#from sqlalchemy import create_engine
+#import psycopg2
+
+#try:
+#    conn = psycopg2.connect("dbname='recipe_recommender' user='postgres' host='localhost' password='recipe' port='5432'")
+#except:
+#    print('Unable to connect to database')   
+
+#engine = create_engine('postgresql://postgres:recipe@localhost:5432/recipe_recommender')
+#ingredients_matrix = pandas.read_sql_table('Ingredients Matrix', engine)
+
+ingredients_matrix = pandas.read_csv('ingredients_matrix')
 
 tf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), stop_words='english', binary=True)
 tfidf_matrix = tf.fit_transform(ingredients_matrix['Ingredients'])
