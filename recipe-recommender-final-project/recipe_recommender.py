@@ -12,7 +12,6 @@ def home():
 @app.route('/', methods=['POST'])
 def recommend():
     input = request.form['text']
-    return input
 
     #from sqlalchemy import create_engine
     #import psycopg2
@@ -23,16 +22,20 @@ def recommend():
     #engine = create_engine('postgresql://postgres:recipe@localhost:5432/recipe_recommender')
     #ingredients_matrix = pandas.read_sql_table('Ingredients Matrix', engine)
 
+
     ingredients_matrix = pandas.read_csv('ingredients_matrix.csv')
+    df_input = pandas.DataFrame({'Link':['N/A'],'Title':['N/A'],'Ingredients':[input]})
+    df_input = df_input[['Link','Title','Ingredients']]
+    df_ingredients_merge = pandas.concat([df_input, ingredients_matrix])
 
     tf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), stop_words='english', binary=True)
-    tfidf_matrix = tf.fit_transform(ingredients_matrix['Ingredients'])
+    tfidf_matrix = tf.fit_transform(df_ingredients_merge['Ingredients'])
 
     #cosine similarity
-    recipe_comparitor = 1
+    recipe_comparitor = 0
     cosine_similarities = linear_kernel(tfidf_matrix[recipe_comparitor], tfidf_matrix).flatten()
     cosine_similarities
-    print('Comparing recipes to: ' + str(ingredients_matrix['Title'][recipe_comparitor]))
+    #print('Comparing recipes to: ' + str(ingredients_matrix['Title'][recipe_comparitor]))
 
     cosine_index = cosine_similarities.argsort()[:-12:-1] # Return the 10 best matches for recipes not including recipe used for comparison
 
