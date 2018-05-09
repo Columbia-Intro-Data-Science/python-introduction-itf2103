@@ -12,7 +12,7 @@ from sklearn.metrics.pairwise import linear_kernel
 #engine = create_engine('postgresql://postgres:recipe@localhost:5432/recipe_recommender')
 #ingredients_matrix = pandas.read_sql_table('Ingredients Matrix', engine)
 
-ingredients_matrix = pandas.read_csv('ingredients_matrix')
+ingredients_matrix = pandas.read_csv('ingredients_matrix.csv')
 
 tf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), stop_words='english', binary=True)
 tfidf_matrix = tf.fit_transform(ingredients_matrix['Ingredients'])
