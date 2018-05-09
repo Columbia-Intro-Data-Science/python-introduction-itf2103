@@ -31,4 +31,4 @@ for i in range(len(cosine_index)):
     similar_items.append([(ingredients_matrix['Title'][cosine_index[i]]), cosine_similarities[cosine_index[i]]])
 del similar_items[0] # Delete first item from list as that will be the recipe being used for comparison
 print('Showing 10 best recipe matches and the cosine similarity')
-similar_items
+print(similar_items)
