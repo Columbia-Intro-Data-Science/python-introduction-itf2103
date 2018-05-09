@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 import pandas
@@ -7,15 +6,20 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/', methods=['POST'])
 def recommend():
+    input = request.form['text']
+    return input
+
     #from sqlalchemy import create_engine
     #import psycopg2
-
     #try:
     #    conn = psycopg2.connect("dbname='recipe_recommender' user='postgres' host='localhost' password='recipe' port='5432'")
     #except:
     #    print('Unable to connect to database')
-
     #engine = create_engine('postgresql://postgres:recipe@localhost:5432/recipe_recommender')
     #ingredients_matrix = pandas.read_sql_table('Ingredients Matrix', engine)
 
@@ -23,7 +27,6 @@ def recommend():
 
     tf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), stop_words='english', binary=True)
     tfidf_matrix = tf.fit_transform(ingredients_matrix['Ingredients'])
-    tfidf_matrix
 
     #cosine similarity
     recipe_comparitor = 1
