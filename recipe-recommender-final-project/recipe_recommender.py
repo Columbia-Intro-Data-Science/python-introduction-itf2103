@@ -24,7 +24,7 @@ def recommend():
 
 
     ingredients_matrix = pandas.read_csv('ingredients_matrix.csv')
-    df_input = pandas.DataFrame({'Link':['N/A'],'Title':['N/A'],'Ingredients':[input]})
+    df_input = pandas.DataFrame({'Link':['N/A'],'Title':['User input'],'Ingredients':[input]})
     df_input = df_input[['Link','Title','Ingredients']]
     df_ingredients_merge = pandas.concat([df_input, ingredients_matrix])
 
@@ -32,11 +32,8 @@ def recommend():
     tfidf_matrix = tf.fit_transform(df_ingredients_merge['Ingredients'])
 
     #cosine similarity
-    recipe_comparitor = 0
+    recipe_comparitor = 0 # Using 0 returns the first item in the dataframe which is the user's input
     cosine_similarities = linear_kernel(tfidf_matrix[recipe_comparitor], tfidf_matrix).flatten()
-    cosine_similarities
-    #print('Comparing recipes to: ' + str(ingredients_matrix['Title'][recipe_comparitor]))
-
     cosine_index = cosine_similarities.argsort()[:-12:-1] # Return the 10 best matches for recipes not including recipe used for comparison
 
     similar_items = []
