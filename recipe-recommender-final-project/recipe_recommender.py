@@ -26,7 +26,7 @@ def recommend():
     ingredients_matrix = pandas.read_csv('ingredients_matrix.csv')
     df_input = pandas.DataFrame({'Link':['N/A'],'Title':['User input'],'Ingredients':[input]})
     df_input = df_input[['Link','Title','Ingredients']]
-    df_ingredients_merge = pandas.concat([df_input, ingredients_matrix])
+    df_ingredients_merge = pandas.concat([df_input, ingredients_matrix], ignore_index=True)
 
     tf = TfidfVectorizer(analyzer='word', ngram_range=(1,3), stop_words='english', binary=True)
     tfidf_matrix = tf.fit_transform(df_ingredients_merge['Ingredients'])
@@ -38,9 +38,10 @@ def recommend():
 
     similar_items = []
     for i in range(len(cosine_index)):
-        similar_items.append([(ingredients_matrix['Title'][cosine_index[i]]), cosine_similarities[cosine_index[i]], ingredients_matrix['Link'][cosine_index[i]]])
+        similar_items.append([(df_ingredients_merge['Title'][cosine_index[i]]), cosine_similarities[cosine_index[i]], df_ingredients_merge['Link'][cosine_index[i]]])
     del similar_items[0] # Delete first item from list as that will be the recipe being used for comparison
-    return jsonify(['Showing 10 best recipe matches, their cosine similarity, and a link to the recipe', similar_items])
+    #return jsonify('Showing 10 best recipe matches and the cosine similarity', similar_items)
+    return jsonify('Showing 10 best recipe matches and their cosine similarity', similar_items)
 
 if __name__ == '__main__':
     app.run(debug=True)
